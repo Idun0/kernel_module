@@ -26,8 +26,7 @@ action :install do
   new_resource.run_action(:load)
 end
 
-# Remove module config, so it doesn't load on reboot.
-# We don't attempt to rmmod it, since there's a high chance it won't work
+# Unload module and remove module config, so it doesn't load on reboot.
 action :uninstall do
   file "/etc/modprobe.d/#{name}.conf" do
     action :delete
