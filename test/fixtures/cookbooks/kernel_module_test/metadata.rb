@@ -1,0 +1,7 @@
+name 'kernel_module_test'
+maintainer 'Shopify'
+maintainer_email 'admins@shopify.com'
+license 'MIT'
+description 'This cookbook is used with test-kitchen to test the parent, kernel_module cookbok'
+version '1.0.0'
+depends 'kernel_module'
