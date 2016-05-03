@@ -3,18 +3,20 @@
 # Resource:: default
 #
 # Copyright 2016, Shopify Inc.
+default_action :install
 
-property :name, String, name_attribute: true
+property :modname, String, name_property: true, identity: true
+property :load_dir, String, default: '/etc/modules-load.d'
+property :unload_dir, String, default: '/etc/modprobe.d'
 
 # Load kernel module, and ensure it loads on reboot
 action :install do
-  template "/etc/modprobe.d/#{name}.conf" do
-    source 'module.conf.erb'
-    cookbook 'kernel_module'
-    variables({
-      :blacklisted => false,
-      :module      => name
-    })
+  directory new_resource.load_dir do
+    recursive true
+  end
+
+  file "#{new_resource.load_dir}/#{modname}.conf" do
+    content modname
     notifies :run, 'execute[update-initramfs]'
   end
 
@@ -28,7 +30,12 @@ end
 
 # Unload module and remove module config, so it doesn't load on reboot.
 action :uninstall do
-  file "/etc/modprobe.d/#{name}.conf" do
+  file "#{new_resource.load_dir}/#{modname}.conf" do
+    action :delete
+    notifies :run, 'execute[update-initramfs]'
+  end
+
+  file "#{new_resource.unload_dir}/blacklist_#{modname}.conf" do
     action :delete
     notifies :run, 'execute[update-initramfs]'
   end
@@ -43,13 +50,8 @@ end
 
 # Blacklist kernel module
 action :blacklist do
-  template "/etc/modprobe.d/#{name}.conf" do
-    source 'module.conf.erb'
-    cookbook 'kernel_module'
-    variables({
-      :blacklisted => true,
-      :module      => name
-    })
+  file "#{new_resource.unload_dir}/blacklist_#{modname}.conf" do
+    content "blacklist #{modname}"
     notifies :run, 'execute[update-initramfs]'
   end
 
@@ -63,14 +65,14 @@ end
 
 # Load kernel module
 action :load do
-  execute "modprobe #{new_resource.name}" do
-    not_if "lsmod | grep #{new_resource.name}"
+  execute "modprobe #{new_resource.modname}" do
+    not_if "lsmod | grep #{new_resource.modname}"
   end
 end
 
 # Unload kernel module
 action :unload do
-  execute "modprobe -r #{new_resource.name}" do
-    only_if "lsmod |grep #{new_resource.name}"
+  execute "modprobe -r #{new_resource.modname}" do
+    only_if "lsmod | grep #{new_resource.modname}"
   end
 end
