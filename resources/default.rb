@@ -16,7 +16,7 @@ action :install do
   end
 
   file "#{new_resource.load_dir}/#{modname}.conf" do
-    content modname
+    content "#{modname}\n"
     notifies :run, 'execute[update-initramfs]'
   end
 
