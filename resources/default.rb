@@ -15,8 +15,8 @@ action :install do
     recursive true
   end
 
-  file "#{new_resource.load_dir}/#{modname}.conf" do
-    content "#{modname}\n"
+  file "#{new_resource.load_dir}/#{new_resource.modname}.conf" do
+    content "#{new_resource.modname}\n"
     notifies :run, 'execute[update-initramfs]'
   end
 
@@ -30,12 +30,12 @@ end
 
 # Unload module and remove module config, so it doesn't load on reboot.
 action :uninstall do
-  file "#{new_resource.load_dir}/#{modname}.conf" do
+  file "#{new_resource.load_dir}/#{new_resource.modname}.conf" do
     action :delete
     notifies :run, 'execute[update-initramfs]'
   end
 
-  file "#{new_resource.unload_dir}/blacklist_#{modname}.conf" do
+  file "#{new_resource.unload_dir}/blacklist_#{new_resource.modname}.conf" do
     action :delete
     notifies :run, 'execute[update-initramfs]'
   end
@@ -50,8 +50,8 @@ end
 
 # Blacklist kernel module
 action :blacklist do
-  file "#{new_resource.unload_dir}/blacklist_#{modname}.conf" do
-    content "blacklist #{modname}"
+  file "#{new_resource.unload_dir}/blacklist_#{new_resource.modname}.conf" do
+    content "blacklist #{new_resource.modname}"
     notifies :run, 'execute[update-initramfs]'
   end
 
