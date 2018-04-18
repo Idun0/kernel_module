@@ -65,13 +65,13 @@ end
 # Load kernel module
 action :load do
   execute "modprobe #{new_resource.modname}" do
-    not_if "lsmod | grep #{new_resource.modname}"
+    not_if "cat /proc/modules | grep ^#{new_resource.modname}"
   end
 end
 
 # Unload kernel module
 action :unload do
   execute "modprobe -r #{new_resource.modname}" do
-    only_if "lsmod | grep #{new_resource.modname}"
+    only_if "cat /proc/modules | grep ^#{new_resource.modname}"
   end
 end
