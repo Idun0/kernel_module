@@ -6,10 +6,13 @@ This cookbook will aid in adding/removing kernel modules from a running system, 
 
 ## Requirements
 
-
 ### Platforms
 
-- Debian, Ubuntu
+- Debian/Ubuntu
+- Redhat and derivatives
+- Fedora
+- Amazon Linux
+- openSUSE
 
 ### Chef
 
