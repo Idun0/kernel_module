@@ -7,7 +7,7 @@ describe 'kernel_module' do
       version: '14.04',
       step_into: 'kernel_module'
     ) do |node|
-      node.set['kernel_modules'] = { 'attribute_test_mod' => 'nothing' }
+      node.default['kernel_modules'] = { 'attribute_test_mod' => 'nothing' }
     end.converge('kernel_module_test::default')
   end
 
