@@ -2,8 +2,7 @@
 # Cookbook Name:: kernel_module
 # Resource:: default
 #
-# Copyright 2016, Shopify Inc.
-default_action :install
+# Copyright 2016-2018, Shopify Inc.
 
 property :modname, String, name_property: true, identity: true
 property :load_dir, String, default: '/etc/modules-load.d'
