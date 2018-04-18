@@ -16,11 +16,11 @@ action :install do
 
   file "#{new_resource.load_dir}/#{new_resource.modname}.conf" do
     content "#{new_resource.modname}\n"
-    notifies :run, 'execute[update-initramfs]'
+    notifies :run, 'execute[update initramfs]'
   end
 
-  execute 'update-initramfs' do
-    command 'update-initramfs -u'
+  execute 'update initramfs' do
+    command initramfs_command
     action :nothing
   end
 
@@ -31,16 +31,16 @@ end
 action :uninstall do
   file "#{new_resource.load_dir}/#{new_resource.modname}.conf" do
     action :delete
-    notifies :run, 'execute[update-initramfs]'
+    notifies :run, 'execute[update initramfs]'
   end
 
   file "#{new_resource.unload_dir}/blacklist_#{new_resource.modname}.conf" do
     action :delete
-    notifies :run, 'execute[update-initramfs]'
+    notifies :run, 'execute[update initramfs]'
   end
 
-  execute 'update-initramfs' do
-    command 'update-initramfs -u'
+  execute 'update initramfs' do
+    command initramfs_command
     action :nothing
   end
 
@@ -51,11 +51,11 @@ end
 action :blacklist do
   file "#{new_resource.unload_dir}/blacklist_#{new_resource.modname}.conf" do
     content "blacklist #{new_resource.modname}"
-    notifies :run, 'execute[update-initramfs]'
+    notifies :run, 'execute[update initramfs]'
   end
 
-  execute 'update-initramfs' do
-    command 'update-initramfs -u'
+  execute 'update initramfs' do
+    command initramfs_command
     action :nothing
   end
 
@@ -73,5 +73,15 @@ end
 action :unload do
   execute "modprobe -r #{new_resource.modname}" do
     only_if "cat /proc/modules | grep ^#{new_resource.modname}"
+  end
+end
+
+action_class do
+  def initramfs_command
+    if platform_family?('debian')
+      'update-initramfs -u'
+    else
+      'dracut -f'
+    end
   end
 end
