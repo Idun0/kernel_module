@@ -6,3 +6,8 @@ description       'Load kernel modules'
 version           '1.0.1'
 
 supports          'ubuntu'
+supports          'debian'
+
+source_url 'https://github.com/chef-cookbooks/kernel_module'
+issues_url 'https://github.com/chef-cookbooks/kernel_module/issues'
+chef_version '>= 12.7' if respond_to?(:chef_version)
