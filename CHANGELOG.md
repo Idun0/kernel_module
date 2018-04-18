@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the kernel_module cookbook.
 
+## 1.1.1 (2018-04-18)
+
+- Support RHEL/Fedora/Suse
+
 ## 1.1.0 (2018-04-18)
 
 - This cookbook is now maintained by Chef in the chef-cookbooks org. Thank you Shopify for the initial work and transferring this cookbook here.

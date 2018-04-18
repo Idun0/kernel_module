@@ -3,7 +3,7 @@ maintainer        'Chef Software, Inc.'
 maintainer_email  'cookbooks@chef.io'
 license           'MIT'
 description       'Load kernel modules'
-version           '1.1.0'
+version           '1.1.1'
 
 %w(amazon centos debian fedora oracle redhat scientific suse opensuse opensuseleap ubuntu).each do |os|
   supports os
