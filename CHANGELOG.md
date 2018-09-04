@@ -2,6 +2,11 @@
 
 This file is used to list changes made in each version of the kernel_module cookbook.
 
+## 1.1.2 (2018-09-04)
+
+- Switch to more native ruby for the load / unload
+- The kernel_module resource is now built into Chef 14.3 and later. When Chef 15.3 is released July 2019 this cookbook will be deprecated as all supported releases of Chef will include this resource.
+
 ## 1.1.1 (2018-04-18)
 
 - Support RHEL/Fedora/Suse
