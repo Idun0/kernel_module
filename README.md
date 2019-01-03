@@ -4,7 +4,9 @@
 
 This cookbook will aid in adding/removing kernel modules from a running system, and ensure they're loaded at system boot.
 
-NOTE: The kernel_module resource is now built into Chef 14.3 and later. When Chef 15.3 is released July 2019 this cookbook will be deprecated as all supported releases of Chef will include this resource.
+## Deprecation
+
+The kernel_module resource is now built into Chef 14.3 and later. All future development of this resource will take place int he chef-client codebase, but this cookbook will remain for those on older chef-client releases.
 
 ## Requirements
 
