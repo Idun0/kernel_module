@@ -1,6 +1,9 @@
 # kernel_module Cookbook CHANGELOG
 
 This file is used to list changes made in each version of the kernel_module cookbook.
+## 1.1.3 (2019-01-25)
+
+- Added New Resources Property mod_params
 
 ## 1.1.2 (2018-09-04)
 
