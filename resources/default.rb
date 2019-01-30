@@ -8,7 +8,7 @@
 property :modname, String, name_property: true, identity: true
 property :load_dir, String, default: '/etc/modules-load.d'
 property :unload_dir, String, default: '/etc/modprobe.d'
-property :mod_params, String, default: ''
+property :modparams, String, default: ''
 
 # Load kernel module, and ensure it loads on reboot
 action :install do
@@ -17,8 +17,8 @@ action :install do
   end
 
   file "#{new_resource.load_dir}/#{new_resource.modname}.conf" do
-    content "#{new_resource.modname} #{new_resource.mod_params}\n"
-    notifies :run, 'execute[update initramfs]'
+    content "#{new_resource.modname}  #{new_resource.modparams}\n"
+    notifies :run, 'execute[update-initramfs]'
   end
 
   execute 'update initramfs' do
@@ -53,7 +53,7 @@ end
 action :blacklist do
   file "#{new_resource.unload_dir}/blacklist_#{new_resource.modname}.conf" do
     content "blacklist #{new_resource.modname}"
-    notifies :run, 'execute[update initramfs]'
+    notifies :run, 'execute[update-initramfs]'
   end
 
   execute 'update initramfs' do

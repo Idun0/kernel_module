@@ -2,11 +2,8 @@ driver:
   name: vagrant
 
 provisioner:
-  name: chef_zero
-  deprecations_as_errors: true
-
-verifier:
-  name: inspec
+  name: chef_solo
+  require_chef_omnibus: 12.19.36
 
 platforms:
   - name: amazonlinux
