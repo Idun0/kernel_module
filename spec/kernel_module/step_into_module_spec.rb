@@ -7,7 +7,7 @@ describe 'kernel_module' do
       version: '14.04',
       step_into: 'kernel_module'
     ) do |node|
-      node.set['kernel_modules'] = { 'attribute_test_mod' => 'nothing' }
+      node.default['kernel_modules'] = { 'attribute_test_mod' => 'nothing' }
     end.converge('kernel_module_test::default')
   end
 
@@ -50,13 +50,13 @@ describe 'kernel_module' do
     it 'can install modules to custom directories' do
       expect(chef_run).to install_kernel_module(custom_install_mod)
       expect(chef_run).to create_directory(custom_mods_dir).with(recursive: true)
-      expect(chef_run).to create_file("#{custom_mods_dir}/#{custom_install_mod}.conf").with_content(custom_install_mod)
+      expect(chef_run).to create_file("#{custom_mods_dir}/#{custom_install_mod}.conf").with_content("#{custom_install_mod}\n")
     end
 
     it 'can register modules to be installed and loaded' do
       expect(chef_run).to install_kernel_module(install_mod)
       expect(chef_run).to create_directory('/etc/modules-load.d').with(recursive: true)
-      expect(chef_run).to create_file("/etc/modules-load.d/#{install_mod}.conf").with_content(install_mod)
+      expect(chef_run).to create_file("/etc/modules-load.d/#{install_mod}.conf").with_content("#{install_mod}\n")
       expect(chef_run.file("/etc/modules-load.d/#{install_mod}.conf")).to notify('execute[update-initramfs]').to(:run)
       expect(chef_run.execute('update-initramfs')).to do_nothing
     end

@@ -2,8 +2,8 @@
 # Cookbook Name:: kernel_module
 # Resource:: default
 #
-# Copyright 2016, Shopify Inc.
-default_action :install
+# Copyright 2016-2018, Shopify Inc.
+# Copyright 2018, Chef Software, Inc.
 
 property :modname, String, name_property: true, identity: true
 property :load_dir, String, default: '/etc/modules-load.d'
@@ -21,8 +21,8 @@ action :install do
     notifies :run, 'execute[update-initramfs]'
   end
 
-  execute 'update-initramfs' do
-    command 'update-initramfs -u'
+  execute 'update initramfs' do
+    command initramfs_command
     action :nothing
   end
 
@@ -33,16 +33,16 @@ end
 action :uninstall do
   file "#{new_resource.load_dir}/#{new_resource.modname}.conf" do
     action :delete
-    notifies :run, 'execute[update-initramfs]'
+    notifies :run, 'execute[update initramfs]'
   end
 
   file "#{new_resource.unload_dir}/blacklist_#{new_resource.modname}.conf" do
     action :delete
-    notifies :run, 'execute[update-initramfs]'
+    notifies :run, 'execute[update initramfs]'
   end
 
-  execute 'update-initramfs' do
-    command 'update-initramfs -u'
+  execute 'update initramfs' do
+    command initramfs_command
     action :nothing
   end
 
@@ -56,8 +56,8 @@ action :blacklist do
     notifies :run, 'execute[update-initramfs]'
   end
 
-  execute 'update-initramfs' do
-    command 'update-initramfs -u'
+  execute 'update initramfs' do
+    command initramfs_command
     action :nothing
   end
 
@@ -66,14 +66,36 @@ end
 
 # Load kernel module
 action :load do
-  execute "modprobe #{new_resource.modname}" do
-    not_if "lsmod | grep #{new_resource.modname}"
+  unless module_loaded?
+    converge_by("load kernel module #{new_resource.modname}") do
+      shell_out!("modprobe #{new_resource.modname}")
+    end
   end
 end
 
 # Unload kernel module
 action :unload do
-  execute "modprobe -r #{new_resource.modname}" do
-    only_if "lsmod | grep #{new_resource.modname}"
+  if module_loaded?
+    converge_by("unload kernel module #{new_resource.modname}") do
+      shell_out!("modprobe -r #{new_resource.modname}")
+    end
+  end
+end
+
+action_class do
+  # determine the correct command to regen the initramfs based on platform
+  # @return [String]
+  def initramfs_command
+    if platform_family?('debian')
+      'update-initramfs -u'
+    else
+      'dracut -f'
+    end
+  end
+
+  # see if the module is listed in /proc/modules or not
+  # @return [Boolean]
+  def module_loaded?
+    /^#{new_resource.modname}/.match?(::File.read('/proc/modules'))
   end
 end

@@ -1,6 +1,6 @@
 name              'kernel_module'
-maintainer        'Shopify'
-maintainer_email  'admins@shopify.com'
+maintainer        'Chef Software, Inc.'
+maintainer_email  'cookbooks@chef.io'
 license           'MIT'
 description       'Load kernel modules'
 version           '1.1.4'
